@@ -1,0 +1,80 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+    Posts/Search
+{% endblock title %}
+
+{% block content %}
+    <h1>Новости</h1>
+    <h3>
+        {{ time_now | date:'d M Y' }}
+    </h3>
+    <hr>
+    {% if len_sum %}
+        <p>
+            Критерии поиска:
+        </p>
+        <form method="GET">
+            {{ filter.form }}
+            <input type="submit" value="Найти" style="width:100px" >
+        </form>
+        {% if postss %}
+            <p>
+                <br/>
+                Найдено публикаций: {{ filter.qs | length }}
+            </p>
+            <br/>
+            <table width="100%">
+                <tr>
+                    <th width="45%">
+                        Заголовок
+                    </th>
+                    <th width="15%">
+                        Дата публикации
+                    </th>
+                    <th width="40%">
+                        Текст
+                    </th>
+                </tr>
+                {% for post in postss %}
+                    <tr>
+                        <td>
+                            {{ post.head | censor }}
+                        </td>
+                        <td>
+                            {{ post.time_in | date:'d.m.Y' }}
+                        </td>
+                        <td>
+                            {{ post.text | censor | truncatechars:50 }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% if is_paginated %}
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <a>{{ num }}</a>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">>>></a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            <p>
+                По указанным параметрам публикаций не найдено!
+            </p>
+        {% endif %}
+    {% else %}
+        <h2> Новостей нет!</h2>
+    {% endif %}
+{% endblock content %}
