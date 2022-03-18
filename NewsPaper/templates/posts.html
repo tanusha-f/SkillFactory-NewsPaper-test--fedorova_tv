@@ -36,7 +36,9 @@
                 <tr>
                     <td>
                         <a href="{% url 'post_detail' post.id %}">{{ post.head | censor }}</a>
-                    </td>
+                        <a href="{% url 'post_update' post.id %}">UPDATE</a>&emsp;
+                        <a href="{% url 'post_delete' post.id %}">DELETE</a>
+                   </td>
                     <td>
                         {{ post.time_in | date:'d.m.Y' }}
                     </td>

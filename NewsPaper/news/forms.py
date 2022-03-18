@@ -1,6 +1,6 @@
-from django.forms import ModelForm, ChoiceField, CharField, MultipleChoiceField
+from django.forms import ModelForm, ChoiceField, CharField, MultipleChoiceField, DateTimeField
 from .models import Post, Author, Category
-from django.forms.widgets import Textarea, CheckboxSelectMultiple
+from django.forms.widgets import Textarea, CheckboxSelectMultiple, DateTimeInput
 
 
 CHOICE_CATEGORY = []
@@ -11,17 +11,14 @@ for name in Category.objects.all().values('id', 'name'):
 class PostForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(PostForm, self).__init__(*args, **kwargs)
-        auth = [(0, 'Выберите имя')]
-        for names in Author.objects.all().order_by('user__username').values('id', 'user__username'):
-            auth.append((names.get('id'), names.get('user__username')))
-        self.fields['author'].choices = auth
-
+        self.fields['author'].label = 'Имя автора'
+        # self.fields['category'].label = 'Категории'
+        # self.fields['category'].widget = CheckboxSelectMultiple
         choice = []
         for names in Category.objects.all().values('id', 'name'):
             choice.append((names.get('id'), names.get('name')))
         self.fields['category'].choices = choice
 
-    author = ChoiceField(label='Имя автора')
     type = ChoiceField(choices=Post.TYPE, label='Тип публикации')
     head = CharField(max_length=255, empty_value='Без названия', label='Заголовок')
     text = CharField(empty_value='Без содержания', label='Содержание', widget=Textarea)
@@ -29,4 +26,4 @@ class PostForm(ModelForm):
 
     class Meta:
         model = Post
-        fields = ('author', 'type', 'head', 'text', 'category')
+        fields = ('author', 'type', 'head', 'text', 'category',)

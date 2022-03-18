@@ -1,11 +1,11 @@
-from django.views.generic import DetailView, ListView, UpdateView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from datetime import datetime
 from .models import Post
 from .filters import PostFilter
 from .forms import PostForm
 
 
-class Posts(ListView):
+class PostsView(ListView):
     model = Post
     template_name = 'posts.html'
     context_object_name = 'posts'
@@ -19,7 +19,7 @@ class Posts(ListView):
         return context
 
 
-class PostDetail(DetailView):
+class PostDetailView(DetailView):
     model = Post
     template_name = 'post_detail.html'
     context_object_name = 'post'
@@ -30,12 +30,12 @@ class PostDetail(DetailView):
         return context
 
 
-class PostsSearch(ListView):
+class PostsSearchView(ListView):
     model = Post
     template_name = 'posts_search.html'
     context_object_name = 'postss'
     ordering = ['-time_in']
-    paginate_by = 1
+#    paginate_by = 1
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -49,10 +49,10 @@ class PostsSearch(ListView):
         return context
 
 
-class PostAdd(ListView):
+class PostAddView(CreateView):
     model = Post
     template_name = 'post_add.html'
-    context_object_name = 'post'
+    context_object_name = 'add'
     form_class = PostForm
 
     def get_context_data(self, **kwargs):
@@ -69,24 +69,23 @@ class PostAdd(ListView):
         return super().get(request, *args, **kwargs)
 
 
-# class PostUpdate(UpdateView):
-#     model = Post
-#     template_name = 'post_add.html'
-#     context_object_name = 'post'
-#     form_class = PostForm
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['time_now'] = datetime.utcnow()
-#         context['form'] = PostForm()
-#         return context
-#
-#     def post(self, request, *args, **kwargs):
-#         form = self.form_class(request.POST)
-#         if form.is_valid():
-#             form.save()
+class PostUpdateView(UpdateView):
+    model = Post
+    template_name = 'post_add.html'
+    context_object_name = 'update'
+    form_class = PostForm
 
-        return super().get(request, *args, **kwargs)
+    def get_object(self, **kwargs):
+        pk_id = self.kwargs.get('pk')
+        return Post.objects.get(pk=pk_id)
+
+
+class PostDeleteView(DeleteView):
+    template_name = 'post_delete.html'
+    queryset = Post.objects.all()
+    success_url = '/posts/'
+
+
 
 
 # class Posts(View):

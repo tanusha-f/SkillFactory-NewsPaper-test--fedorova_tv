@@ -3,7 +3,11 @@
 {% load custom_filters %}
 
 {% block title %}
-    Posts/Add
+{% if update %}
+    Posts/Update
+{% else %}
+    Post/Add
+{% endif %}
 {% endblock title %}
 
 {% block content %}
@@ -18,6 +22,10 @@
     <form method="POST">
         {% csrf_token %}
         {{ form }}
-        <input type="submit" value="Добавить новость" style="width:200px" >
+        {% if update %}
+            <input type="submit" value="Редактировать публикацию" style="width:250px" >
+        {% else %}
+            <input type="submit" value="Добавить публикацию" style="width:200px" >
+        {% endif %}
     </form>
 {% endblock content %}
