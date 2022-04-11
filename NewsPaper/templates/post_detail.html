@@ -29,9 +29,28 @@
     <p>
         Рейтинг: {{ post.rating }}
     </p>
+    <p>
+        Категории:<br/>
+         {% for cat in post_cat %}
+            {{cat}}&emsp;
+        {% endfor %}
+   </p>
+
     <br/><br/>
+    {% if request.user == post.author.user %}
     <a href="{% url 'post_update' post.id %}">UPDATE</a>
     &emsp;
     <a href="{% url 'post_delete' post.id %}">DELETE</a>
+    {% endif %}
+    <br/><br/>
+    {% if subs %}
+        Подпишитесь на дополнительные категории:
+        {% for key, value in subs.items %}
+            <p>{{value}} <button> <a href="{% url 'subsadd' key %}"> Подписаться </a> </button></p>
 
+            <br/>
+        {% endfor %}
+    {% else %}
+        Вы подписаны на все категории данной публикации
+    {% endif %}
 {% endblock content %}

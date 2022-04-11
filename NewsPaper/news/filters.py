@@ -1,5 +1,5 @@
 from django_filters import FilterSet, CharFilter, DateFilter, ChoiceFilter
-from .models import Post, Author
+from .models import Post, Author, Category
 from django.forms.widgets import DateInput
 
 
@@ -14,12 +14,21 @@ class PostFilter(FilterSet):
                 'choices': auth
             }
         )
+        auth = []
+        for names in Category.objects.all().values('id', 'name'):
+            auth.append((names.get('id'), names.get('name')))
+        self.filters['category'].extra.update(
+            {
+                'choices': auth
+            }
+        )
 
-    author = ChoiceFilter(field_name='author', label='Имя автора')
+    author = ChoiceFilter(field_name='author', label='Имя автора', )
     title = CharFilter(field_name='head', lookup_expr='icontains',
                        label='Заголовок статьи')
     data = DateFilter(field_name='time_in', lookup_expr='gt',
                       label='Опубликовано не ранее', widget=DateInput(format='%d.%m.%Y', attrs={'type': 'date'}))
+    category = ChoiceFilter(field_name='category', label='категория', )
 
     class Meta:
         model = Post

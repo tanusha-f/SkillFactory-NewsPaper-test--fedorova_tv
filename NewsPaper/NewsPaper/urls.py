@@ -15,8 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from news.views import PostsView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('posts/', include('news.urls')),
+    path('', PostsView.as_view()),
+    path('profile/', include('protect.urls')),
+    path('sign/', include('sign.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
